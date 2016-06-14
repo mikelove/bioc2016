@@ -1,13 +1,26 @@
 ---
-title       : Bioconductor Workflows Following Fast, Lightweight RNA Transcript Quantifiers
-subtitle    : 
+title       : Michael Love - Bioc2016
 author      : Michael Love
-framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
-highlighter : highlight.js  # {highlight.js, prettify, highlight}
-hitheme     : tomorrow      # 
-widgets     : []            # {mathjax, quiz, bootstrap}
-mode        : selfcontained # {standalone, draft}
+framework   : revealjs
+revealjs: # https://github.com/hakimel/reveal.js/
+  transition  : fade
+  theme       : beige
+  center      : "true"
+highlighter : highlight.js
+hitheme     : tomorrow
+widgets     : [mathjax]
+mode        : selfcontained
 knit        : slidify::knit2slides
+---
+
+## Bioconductor Workflows Following Fast, Lightweight RNA Transcript Quantifiers
+
+[Michael Love](http://mikelove.github.io) <br>
+[@mikelove](http://twitter.com/mikelove) <br>
+[Bioc2016](http://bioconductor.org/help/course-materials/2016/BioC2016/) <br>
+June 25, 2016 <br>
+this talk: http://mikelove.github.io/bioc2016
+
 ---
 
 # Hello world
