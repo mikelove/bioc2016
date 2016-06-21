@@ -108,6 +108,7 @@ percent abundance ... $\theta$
 ## Gene-level and tx-level complementary 
 
 <img src="img/dgedte.png">
+
 ---
 
 ## Ex: Roadmap tissues
