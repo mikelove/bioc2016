@@ -1,0 +1,81 @@
+---
+title       : Michael Love - Bioc2016
+author      : Michael Love
+framework   : revealjs
+revealjs: # https://github.com/hakimel/reveal.js/
+  transition  : linear
+  theme       : beige
+  center      : "true"
+highlighter : highlight.js
+hitheme     : tomorrow
+widgets     : [mathjax]
+mode        : selfcontained
+knit        : slidify::knit2slides
+---
+
+## Bioconductor Workflows Following Fast, Lightweight RNA Transcript Quantifiers
+
+[Michael Love](http://mikelove.github.io) <br>
+[@mikelove](http://twitter.com/mikelove) <br>
+[Bioc2016](http://bioconductor.org/help/course-materials/2016/BioC2016/) <br>
+June 25, 2016 <br>
+this talk: http://mikelove.github.io/bioc2016
+
+---
+
+## Work in collaboration with
+
+* Charlotte Soneson
+* Mark Robinson
+
+---
+
+## Tried and true differential gene expression methods
+
+* DESeq2, edgeR, limma-voom
+* Scores of third party evaluations in literature
+* Uses counts of genes that can be uniquely assigned to genes
+
+---
+
+## Standard gene-level pipeline
+
+* Align paired end reads => BAM file (30 min, multi Gb)
+* Count pairs from BAM file in genes => count table (10-30 min)
+* Count table => statistical package for inference and ordination
+
+---
+
+## Potential problems with the standard pipeline
+
+* Generates unnecessary information and large intermediary file
+* Discards pairs that cannot be uniquely assigned to genes (Robert & Watson 2015)
+* Counts are correlated with feature length (Trapnell et al 2013) [1]
+
+[1] See Soneson 2015, not a problem for many experiments
+
+---
+
+## New, fast transcript quantifiers
+
+* Sailfish, Salmon, kallisto
+* Finish in minutes, outputing relative abundance per *transcript*
+
+---
+
+## Using these quantifiers for differential gene expression
+
+* Collapse (large) uncertainty of isoform counts within a gene
+* Preserve read pairs from problematic genes => increased sensitivity
+* Calculate an offset which accounts for changes in average transcript length
+
+---
+
+## Example: Roadmap tissues
+
+* Code is available on [GitHub](https://github.com/mikelove/roadmapSalmon)
+* Salmon on 30 FASTQ files: few minutes per sample
+* tximport: 9 seconds 
+* variance stabilizing transformation: 3 seconds
+* PCA plot
+

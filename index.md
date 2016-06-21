@@ -3,7 +3,7 @@ title       : Michael Love - Bioc2016
 author      : Michael Love
 framework   : revealjs
 revealjs: # https://github.com/hakimel/reveal.js/
-  transition  : fade
+  transition  : linear
   theme       : beige
   center      : "true"
 highlighter : highlight.js
@@ -23,14 +23,6 @@ this talk: http://mikelove.github.io/bioc2016
 
 ---
 
-# Hello world
+## Slides will be uploaded June 25
 
-* this
-* is a 
-* slide
 
----
-
-# Next slide
-
-yes
