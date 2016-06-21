@@ -27,12 +27,13 @@ this talk: http://mikelove.github.io/bioc2016
 
 * Align reads (30 min, 2-5 Gb file)
 * Count reads in genes (10-30 min)
-* Stats package for inference and EDA
-    * DESeq2, edgeR, limma-voom
-    * Tried and true: many 3rd party evaluations
-    * *Counts* of reads: precision of log2FC
+* Stats packages for inference:
+    * DESeq2, edgeR, limma-voom, etc.
+* *Counts* of reads: precision of log2FC
 
-*picture*
+<br>
+
+<img width=450 src="img/maplot.png">
 
 ---
 
@@ -70,9 +71,11 @@ this talk: http://mikelove.github.io/bioc2016
 
 * Sum transcript level estimated counts to gene level
 * Collapse uncertainty of isoform counts within a gene
-* Keep multimapping reads increases sensitivity
+* Keep multimapping reads, increase sensitivity
 
-*picture of collapsing*
+<br>
+
+<img width=500 src="img/unident.png">
 
 ---
 
@@ -93,9 +96,8 @@ percent abundance ... $\theta$
 
 ## Offset is accurate when needed
 
-* We will have most data when the feature length is critical
+* Have the most data when the length is most important
 
-*picture of unidentifiable*
 *picture of long and short*
 
 ---
@@ -118,6 +120,10 @@ plotPCA(vsd, "tissue")
 dds <- DESeq(dds)
 res <- results(dds)
 ```
+
+---
+
+## Ex: Roadmap tissues
 
 *show PCA picture*
 
