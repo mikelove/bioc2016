@@ -13,7 +13,7 @@ mode        : selfcontained
 knit        : slidify::knit2slides
 ---
 
-## Bioconductor Workflows Following Fast, Lightweight RNA Transcript Quantifiers
+## Bioconductor Workflows Following Fast, Lightweight RNA-seq Quantifiers
 
 [Michael Love](http://mikelove.github.io) <br>
 [@mikelove](http://twitter.com/mikelove) <br>
