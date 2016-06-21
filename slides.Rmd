@@ -25,13 +25,11 @@ this talk: http://mikelove.github.io/bioc2016
 
 ## A typical gene-level RNA-seq pipeline
 
-* Align reads (30 min, 2-5 Gb file)
-* Count reads in genes (10-30 min)
+* Align reads (15-30 min, 2-5 Gb file)
+* Count reads in genes (15-30 min)
 * Stats packages for inference:
     * DESeq2, edgeR, limma-voom, etc.
 * *Counts* of reads: precision of log2FC
-
-<br>
 
 <img width=450 src="img/maplot.png">
 
@@ -39,11 +37,10 @@ this talk: http://mikelove.github.io/bioc2016
 
 ## Criticisms of the standard count-based pipeline
 
-* Slow, generates large file with exact alignments
 * Counts are correlated with feature length
 [Trapnell et al 2013](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3869392/)
 
-*picture of DGE, DTE, DTU*
+<img width=450 src="img/genelength.png">
 
 ---
 
@@ -51,17 +48,31 @@ this talk: http://mikelove.github.io/bioc2016
 
 * Discards reads that cannot be uniquely assigned to genes [Robert & Watson 2015](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0734-x)
 
-*picture of easy assignment*
+<img width=450 src="img/multimapping.png">
+
+---
+
+## Criticisms of the standard count-based pipeline III
+
+* Slow, generates large intermediate file with exact alignments
 
 ---
 
 ## New, fast transcript quantifiers
 
-* Sailfish, Salmon, kallisto
-* Not exact alignment, but *pseudo-alignment*
-* Set of transcripts of likely origin
+* [Sailfish](http://www.cs.cmu.edu/~ckingsf/software/sailfish/), [Salmon](https://combine-lab.github.io/salmon/), [kallisto](https://pachterlab.github.io/kallisto/about)
+* Not exact base-by-base alignments
+* Rough location of read within a set of txs
 * Few min / file, small memory req'd
-* Output relative abundance per transcript
+* Output relative abundance per tx
+
+<img src="img/sailfish.png"> <img height=175 src="img/kallisto.png"> <img src="img/rapmap.png">
+
+<small>Diagrams from:
+[Sailfish](http://www.nature.com/nbt/journal/v32/n5/full/nbt.2862.html),
+[kallisto](http://www.nature.com/nbt/journal/v34/n5/full/nbt.3519.html),
+[RapMap](http://bioinformatics.oxfordjournals.org/content/32/12/i192.full)
+pubs </small>
 
 ---
 
@@ -69,11 +80,9 @@ this talk: http://mikelove.github.io/bioc2016
 
 <http://bioconductor.org/packages/tximport>
 
-* Sum transcript level estimated counts to gene level
-* Collapse uncertainty of isoform counts within a gene
-* Keep multimapping reads, increase sensitivity
-
-<br>
+* Sum transcript-level estimated counts to gene-level
+* Collapses isoform uncertainty
+* Preserves multimapping reads, increases sensitivity
 
 <img width=500 src="img/unident.png">
 
@@ -81,12 +90,14 @@ this talk: http://mikelove.github.io/bioc2016
 
 ## Using with gene DE
 
-* Calculate an offset that accounts for changes in average transcript length
+* Calculate an offset that accounts for changes in average transcript
+  length across samples
 
 <br>
 
-$$ \textrm{ATL}_{g} \equiv \sum_{i \in g} \theta_{i} \bar{l}_{i}, \quad \sum_{i \in g} \theta_{i} = 1 $$
+$$ \textrm{ATL}_{gs} \equiv \sum_{i \in g} \theta_{is} \bar{l}_{is}, \quad \sum_{i \in g} \theta_{is} = 1 $$
 
+sample .............................. $s$ <br>
 gene ................................... $g$ <br>
 isoform ............................. $i$ <br>
 effective length ............ $\bar{l}$ <br>
@@ -94,11 +105,9 @@ percent abundance ... $\theta$
 
 ---
 
-## Offset is accurate when needed
+## Gene-level and tx-level complementary 
 
-* Have the most data when the length is most important
 
-*picture of long and short*
 
 ---
 
@@ -106,15 +115,16 @@ percent abundance ... $\theta$
 
 [Code on GitHub](https://github.com/mikelove/roadmapSalmon)
 
-Run Salmon on 30 FASTQ: few min / file
+Run Salmon on 37 FASTQ: ~4 min / file
 
 ```{r eval=FALSE}
-# 9 seconds to import and summarize
-txi <- tximport(files, type="salmon", tx2gene=tx2gene)
+# 25 seconds to import and summarize
+txi <- tximport(files, type="salmon", tx2gene=tx2gene, reader=read_tsv)
 # build DESeq2 object
-dds <- DESeqDataSetFromTximport(txi, samps, ~tissue)
-# 3 seconds to variance stabilize
+dds <- DESeqDataSetFromTximport(txi, samples, ~tissue)
+# 4 seconds to variance stabilize
 vsd <- vst(dds)
+# exploratory data analysis
 plotPCA(vsd, "tissue")
 # differential expression
 dds <- DESeq(dds)
@@ -125,19 +135,25 @@ res <- results(dds)
 
 ## Ex: Roadmap tissues
 
-*show PCA picture*
+<img width=450 src="img/pca1.png"> <img width=450 src="img/pca2.png">
 
 ---
 
-## Work in collaboration with
+## This work in collaboration with
 
-* Charlotte Soneson (UZH)
-* Mark Robinson (UZH)
+* Charlotte Soneson [@CSoneson](https://twitter.com/CSoneson) (UZH)
+* Mark Robinson [@markrobinsonca](https://twitter.com/markrobinsonca) (UZH)
+
+<br>
+
+* Soneson, C., Love, M.I., Robinson, M.D. *Differential analyses for RNA-seq:
+transcript-level estimates improve gene-level inferences.*
+[F1000Research](http://f1000research.com/articles/4-1521/v1), Dec 2015.
 
 <br>
 
 ## Support from
 
-* Rafael Irizarry (DFCI)
+* Rafael Irizarry [@rafalab](https://twitter.com/rafalab) (DFCI & HSPH)
 * NIH Cancer Training Grant
 
