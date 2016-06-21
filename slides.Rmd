@@ -78,7 +78,7 @@ pubs </small>
 
 ## Using with gene DE
 
-<http://bioconductor.org/packages/tximport>
+<http://bioconductor.org/packages/tximport> & [F1000Research](http://f1000research.com/articles/4-1521/v1)
 
 * Sum transcript-level estimated counts to gene-level
 * Collapses isoform uncertainty
@@ -107,8 +107,7 @@ percent abundance ... $\theta$
 
 ## Gene-level and tx-level complementary 
 
-
-
+<img src="img/dgedte.png">
 ---
 
 ## Ex: Roadmap tissues
