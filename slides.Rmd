@@ -13,7 +13,7 @@ mode        : selfcontained
 knit        : slidify::knit2slides
 ---
 
-## Bioconductor Workflows Following Fast, Lightweight RNA Transcript Quantifiers
+## Bioconductor Workflows Following Fast, Lightweight RNA-seq Quantifiers
 
 [Michael Love](http://mikelove.github.io) <br>
 [@mikelove](http://twitter.com/mikelove) <br>
@@ -23,59 +23,115 @@ this talk: http://mikelove.github.io/bioc2016
 
 ---
 
-## Work in collaboration with
+## A typical gene-level RNA-seq pipeline
 
-* Charlotte Soneson
-* Mark Robinson
+* Align reads (30 min, 2-5 Gb file)
+* Count reads in genes (10-30 min)
+* Stats package for inference and EDA
+    * DESeq2, edgeR, limma-voom
+    * Tried and true: many 3rd party evaluations
+    * *Counts* of reads: precision of log2FC
 
----
-
-## Tried and true differential gene expression methods
-
-* DESeq2, edgeR, limma-voom
-* Scores of third party evaluations in literature
-* Uses counts of genes that can be uniquely assigned to genes
+*picture*
 
 ---
 
-## Standard gene-level pipeline
+## Criticisms of the standard count-based pipeline
 
-* Align paired end reads => BAM file (30 min, multi Gb)
-* Count pairs from BAM file in genes => count table (10-30 min)
-* Count table => statistical package for inference and ordination
+* Slow, generates large file with exact alignments
+* Counts are correlated with feature length
+[Trapnell et al 2013](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3869392/)
+
+*picture of DGE, DTE, DTU*
 
 ---
 
-## Potential problems with the standard pipeline
+## Criticisms of the standard count-based pipeline II
 
-* Generates unnecessary information and large intermediary file
-* Discards pairs that cannot be uniquely assigned to genes (Robert & Watson 2015)
-* Counts are correlated with feature length (Trapnell et al 2013) [1]
+* Discards reads that cannot be uniquely assigned to genes [Robert & Watson 2015](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0734-x)
 
-[1] See Soneson 2015, not a problem for many experiments
+*picture of easy assignment*
 
 ---
 
 ## New, fast transcript quantifiers
 
 * Sailfish, Salmon, kallisto
-* Finish in minutes, outputing relative abundance per *transcript*
+* Not exact alignment, but *pseudo-alignment*
+* Set of transcripts of likely origin
+* Few min / file, small memory req'd
+* Output relative abundance per transcript
 
 ---
 
-## Using these quantifiers for differential gene expression
+## Using with gene DE
 
-* Collapse (large) uncertainty of isoform counts within a gene
-* Preserve read pairs from problematic genes => increased sensitivity
-* Calculate an offset which accounts for changes in average transcript length
+<http://bioconductor.org/packages/tximport>
+
+* Sum transcript level estimated counts to gene level
+* Collapse uncertainty of isoform counts within a gene
+* Keep multimapping reads increases sensitivity
+
+*picture of collapsing*
 
 ---
 
-## Example: Roadmap tissues
+## Using with gene DE
 
-* Code is available on [GitHub](https://github.com/mikelove/roadmapSalmon)
-* Salmon on 30 FASTQ files: few minutes per sample
-* tximport: 9 seconds 
-* variance stabilizing transformation: 3 seconds
-* PCA plot
+* Calculate an offset that accounts for changes in average transcript length
+
+<br>
+
+$$ \textrm{ATL}_{g} \equiv \sum_{i \in g} \theta_{i} \bar{l}_{i}, \quad \sum_{i \in g} \theta_{i} = 1 $$
+
+gene ................................... $g$ <br>
+isoform ............................. $i$ <br>
+effective length ............ $\bar{l}$ <br>
+percent abundance ... $\theta$
+
+---
+
+## Offset is accurate when needed
+
+* We will have most data when the feature length is critical
+
+*picture of unidentifiable*
+*picture of long and short*
+
+---
+
+## Ex: Roadmap tissues
+
+[Code on GitHub](https://github.com/mikelove/roadmapSalmon)
+
+Run Salmon on 30 FASTQ: few min / file
+
+```{r eval=FALSE}
+# 9 seconds to import and summarize
+txi <- tximport(files, type="salmon", tx2gene=tx2gene)
+# build DESeq2 object
+dds <- DESeqDataSetFromTximport(txi, samps, ~tissue)
+# 3 seconds to variance stabilize
+vsd <- vst(dds)
+plotPCA(vsd, "tissue")
+# differential expression
+dds <- DESeq(dds)
+res <- results(dds)
+```
+
+*show PCA picture*
+
+---
+
+## Work in collaboration with
+
+* Charlotte Soneson (UZH)
+* Mark Robinson (UZH)
+
+<br>
+
+## Support from
+
+* Rafael Irizarry (DFCI)
+* NIH Cancer Training Grant
 
