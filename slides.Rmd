@@ -37,8 +37,8 @@ this talk: http://mikelove.github.io/bioc2016
 
 ## Criticisms of the standard count-based pipeline
 
-* Counts are correlated with feature length
-[Trapnell et al 2013](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3869392/)
+* Counts scale with feature length [Trapnell et al 2013](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3869392/)
+* Learning bias easier if you know the source
 
 <img width=450 src="img/genelength.png">
 
@@ -47,6 +47,7 @@ this talk: http://mikelove.github.io/bioc2016
 ## Criticisms of the standard count-based pipeline II
 
 * Discards reads that cannot be uniquely assigned to genes [Robert & Watson 2015](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0734-x)
+* In many cases, we can identify the source (or a set of similar sources)
 
 <img width=450 src="img/multimapping.png">
 
@@ -81,8 +82,8 @@ pubs </small>
 <http://bioconductor.org/packages/tximport> & [F1000Research](http://f1000research.com/articles/4-1521/v1)
 
 * Sum transcript-level estimated counts to gene-level
-* Collapses isoform uncertainty
-* Preserves multimapping reads, increases sensitivity
+* Collapse isoform uncertainty
+* Probabilistically assign (genomic) multimapping reads, increase sensitivity
 
 <img width=500 src="img/unident.png">
 
