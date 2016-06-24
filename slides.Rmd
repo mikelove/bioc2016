@@ -38,7 +38,7 @@ this talk: http://mikelove.github.io/bioc2016
 ## Criticisms of the standard count-based pipeline
 
 * Counts scale with feature length [Trapnell et al 2013](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3869392/)
-* Learning bias easier if you know the source
+* Learning bias (e.g. positional) easier if you know the source
 
 <img width=450 src="img/genelength.png">
 
@@ -109,6 +109,11 @@ percent abundance ... $\theta$
 ## Gene-level and tx-level complementary 
 
 <img src="img/dgedte.png">
+
+<small>Packages for DTE: cuffdiff, BitSeq, EBSeq, sleuth (w/
+kallisto), ...</small>
+
+<small>[Packages for DEU/DTU](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0862-3): DEXSeq, cuffdiff, MISO, diffSplice, rMATS, ...</small>
 
 ---
 
