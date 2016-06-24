@@ -145,6 +145,15 @@ res <- results(dds)
 
 ---
 
+## What's next
+
+* `tximportMeta` wrapping `tximport`
+* Should tell us about samples, transcriptome, what
+  software was used, what options
+* How to include?
+
+---
+
 ## This work in collaboration with
 
 * Charlotte Soneson [@CSoneson](https://twitter.com/CSoneson) (UZH)
