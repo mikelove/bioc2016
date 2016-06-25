@@ -28,8 +28,167 @@ this talk: <a href="http://mikelove.github.io/bioc2016">http://mikelove.github.i
 
 </section>
 <section class='' data-state='' id='slide-2'>
-  <h2>Slides will be uploaded June 25</h2>
-  
+  <h2>A typical gene-level RNA-seq pipeline</h2>
+  <ul>
+<li>Align reads (15-30 min, 2-5 Gb file)</li>
+<li>Count reads in genes (15-30 min)</li>
+<li>Stats packages for inference:
+
+<ul>
+<li>DESeq2, edgeR, limma-voom, etc.</li>
+</ul></li>
+<li><em>Counts</em> of reads: precision of log2FC</li>
+</ul>
+
+<p><img width=450 src="img/maplot.png"></p>
+
+</section>
+<section class='' data-state='' id='slide-3'>
+  <h2>Criticisms of the standard count-based pipeline</h2>
+  <ul>
+<li>Counts scale with feature length <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3869392/">Trapnell et al 2013</a></li>
+<li>Learning bias (e.g. positional) easier if you know the source</li>
+</ul>
+
+<p><img width=450 src="img/genelength.png"></p>
+
+</section>
+<section class='' data-state='' id='slide-4'>
+  <h2>Criticisms of the standard count-based pipeline II</h2>
+  <ul>
+<li>Discards reads that cannot be uniquely assigned to genes <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0734-x">Robert &amp; Watson 2015</a></li>
+<li>In many cases, we can identify the source (or a set of similar sources)</li>
+</ul>
+
+<p><img width=450 src="img/multimapping.png"></p>
+
+</section>
+<section class='' data-state='' id='slide-5'>
+  <h2>Criticisms of the standard count-based pipeline III</h2>
+  <ul>
+<li>Generates large intermediate file with exact alignments
+which you may not need</li>
+</ul>
+
+</section>
+<section class='' data-state='' id='slide-6'>
+  <h2>New, fast transcript quantifiers</h2>
+  <ul>
+<li><a href="http://www.cs.cmu.edu/%7Eckingsf/software/sailfish/">Sailfish</a>, <a href="https://combine-lab.github.io/salmon/">Salmon</a>, <a href="https://pachterlab.github.io/kallisto/about">kallisto</a></li>
+<li>Not exact base-by-base alignments</li>
+<li>Rough location of read within a set of txs</li>
+<li>Few min / file, small memory req&#39;d</li>
+<li>Output relative abundance per tx</li>
+</ul>
+
+<p><img src="img/sailfish.png"> <img height=175 src="img/kallisto.png"> <img src="img/rapmap.png"></p>
+
+<p><small>Diagrams from:
+<a href="http://www.nature.com/nbt/journal/v32/n5/full/nbt.2862.html">Sailfish</a>,
+<a href="http://www.nature.com/nbt/journal/v34/n5/full/nbt.3519.html">kallisto</a>,
+<a href="http://bioinformatics.oxfordjournals.org/content/32/12/i192.full">RapMap</a>
+pubs </small></p>
+
+</section>
+<section class='' data-state='' id='slide-7'>
+  <h2>Using with gene DE</h2>
+  <p><a href="http://bioconductor.org/packages/tximport">http://bioconductor.org/packages/tximport</a> &amp; <a href="http://f1000research.com/articles/4-1521/v1">F1000Research</a></p>
+
+<ul>
+<li>Sum transcript-level estimated counts to gene-level</li>
+<li>Collapse isoform uncertainty</li>
+<li>Probabilistically assign (genomic) multimapping reads, increase sensitivity</li>
+</ul>
+
+<p><img width=500 src="img/unident.png"></p>
+
+</section>
+<section class='' data-state='' id='slide-8'>
+  <h2>Using with gene DE</h2>
+  <ul>
+<li>Calculate an offset that accounts for changes in average transcript
+length across samples</li>
+</ul>
+
+<p><br></p>
+
+<p>\[ \textrm{ATL}_{gs} \equiv \sum_{i \in g} \theta_{is} \bar{l}_{is}, \quad \sum_{i \in g} \theta_{is} = 1 \]</p>
+
+<p>sample .............................. \(s\) <br>
+gene ................................... \(g\) <br>
+isoform ............................. \(i\) <br>
+effective length ............ \(\bar{l}\) <br>
+percent abundance ... \(\theta\)</p>
+
+</section>
+<section class='' data-state='' id='slide-9'>
+  <h2>Gene-level and tx-level complementary</h2>
+  <p><img src="img/dgedte.png"></p>
+
+<p><small>Packages for DTE: cuffdiff, BitSeq, EBSeq, sleuth (w/
+kallisto), ...</small></p>
+
+<p><small><a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0862-3">Packages for DEU/DTU</a>: DEXSeq, cuffdiff, MISO, diffSplice, rMATS, ...</small></p>
+
+</section>
+<section class='' data-state='' id='slide-10'>
+  <h2>Ex: Roadmap tissues</h2>
+  <p><a href="https://github.com/mikelove/roadmapSalmon">Code on GitHub</a></p>
+
+<p>Run Salmon on 37 FASTQ: ~4 min / file</p>
+
+<pre><code class="r"># 25 seconds to import and summarize
+txi &lt;- tximport(files, type=&quot;salmon&quot;, tx2gene=tx2gene, reader=read_tsv)
+# build DESeq2 object
+dds &lt;- DESeqDataSetFromTximport(txi, samples, ~tissue)
+# 4 seconds to variance stabilize
+vsd &lt;- vst(dds)
+# exploratory data analysis
+plotPCA(vsd, &quot;tissue&quot;)
+# differential expression
+dds &lt;- DESeq(dds)
+res &lt;- results(dds)
+</code></pre>
+
+</section>
+<section class='' data-state='' id='slide-11'>
+  <h2>Ex: Roadmap tissues</h2>
+  <p><img width=450 src="img/pca1.png"> <img width=450 src="img/pca2.png"></p>
+
+</section>
+<section class='' data-state='' id='slide-12'>
+  <h2>What&#39;s next</h2>
+  <ul>
+<li><code>tximportMeta</code> wrapping <code>tximport</code></li>
+<li>Should tell us about samples, transcriptome, what
+software was used, what options</li>
+</ul>
+
+</section>
+<section class='' data-state='' id='slide-13'>
+  <h2>This work in collaboration with</h2>
+  <ul>
+<li>Charlotte Soneson <a href="https://twitter.com/CSoneson">@CSoneson</a> (UZH)</li>
+<li>Mark Robinson <a href="https://twitter.com/markrobinsonca">@markrobinsonca</a> (UZH)</li>
+</ul>
+
+<p><br></p>
+
+<ul>
+<li>Soneson, C., Love, M.I., Robinson, M.D. <em>Differential analyses for RNA-seq:
+transcript-level estimates improve gene-level inferences.</em>
+<a href="http://f1000research.com/articles/4-1521/v1">F1000Research</a>, Dec 2015.</li>
+</ul>
+
+<p><br></p>
+
+<h2>Support from</h2>
+
+<ul>
+<li>Rafael Irizarry <a href="https://twitter.com/rafalab">@rafalab</a> (DFCI &amp; HSPH)</li>
+<li>NIH Cancer Training Grant</li>
+</ul>
+
 </section>
     </div>
   </div>
